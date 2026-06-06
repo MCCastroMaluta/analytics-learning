@@ -1,28 +1,32 @@
---Inspection of tables and tables types from the schema
-SELECT
-		table_name,
-		table_type
-FROM information_schema.tables
-WHERE table_schema = 'supermarket'
-ORDER BY table_type, table_name;
---Tables in the schema
-SELECT
-			table_name,
-			column_name,
-			data_type,
-			is_nullable
-FROM 		information_schema.columns
-WHERE 		table_schema = 'supermarket'
-ORDER BY 	table_name,
-			ordinal_position;
+/*
+File: table_sizes.sql
 
--- Tables sizes
+Purpose:
+Measure the relative size of each table in the supermarket schema
+based on row counts.
 
+Business Value:
+Helps identify:
+- High-volume transactional tables
+- Dimension tables
+- Potential analytical fact tables
+- Areas that may require optimization in future workloads
 
+Dataset:
+supermarket
+
+Created:
+2026-06-05
+
+Last Updated:
+2026-06-05
+*/
+
+-- Row count by table
 SELECT *
 FROM (
 		SELECT 'cart_events' AS table_name,
-			COUNT(*) AS registers
+			COUNT(*) AS total_rows
 		FROM supermarket.cart_events
 		UNION ALL
 		SELECT 'cart_items', COUNT(*) 
@@ -106,5 +110,5 @@ FROM (
 		SELECT 'warehouses', COUNT(*) 
 		FROM supermarket.warehouses
 ) t
-ORDER BY registers DESC;
+ORDER BY total_rows DESC;
 
